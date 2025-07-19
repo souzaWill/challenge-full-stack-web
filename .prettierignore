@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+.env
+tsconfig.json
+.serverless
+README.md
