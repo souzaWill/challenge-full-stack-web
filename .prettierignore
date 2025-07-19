@@ -4,3 +4,4 @@ coverage
 .env
 tsconfig.json
 .serverless
+README.md
