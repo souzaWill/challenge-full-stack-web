@@ -9,7 +9,8 @@
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && node dist/index.js",
     "test": "NODE_ENV=test jest",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
