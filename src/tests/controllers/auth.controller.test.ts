@@ -105,3 +105,110 @@ describe('POST /login - Authentication', () => {
     );
   });
 });
+
+describe('POST /register - Authentication', () => {
+  async function register(
+    name?: string,
+    email?: string,
+    password?: string,
+    confirmPassword?: string,
+  ) {
+    const payload: Record<string, any> = {
+      ...(name !== undefined && { name }),
+      ...(email !== undefined && { email }),
+      ...(password !== undefined && { password }),
+      ...(confirmPassword !== undefined && { confirmPassword }),
+    };
+
+    return await request(app).post('/register').send(payload);
+  }
+
+  it('should register user with valid body', async () => {
+    const name = faker.person.fullName();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const confirmPassword = password;
+
+    const res = await register(name, email, password, confirmPassword);
+
+    expect(res.status).toBe(StatusCodes.CREATED);
+    expect(res.body).toMatchObject({
+      id: expect.any(String),
+      email: expect.any(String),
+      name: expect.any(String),
+    });
+    expect(res.body).not.toHaveProperty('password');
+  });
+
+  it('should not register user when email already exists', async () => {
+    const name = faker.person.fullName();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const confirmPassword = password;
+
+    await createTestUser({ email });
+
+    const res = await register(name, email, password, confirmPassword);
+
+    expect(res.status).toBe(StatusCodes.BAD_REQUEST);
+    expect(res.body).toHaveProperty('message');
+    expect(res.body.message).toBe('E-mail já cadastrado');
+  });
+
+  it('should not register user when passwords do not match', async () => {
+    const name = faker.person.fullName();
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const confirmPassword = faker.internet.password();
+
+    const res = await register(name, email, password, confirmPassword);
+
+    expect(res.status).toBe(StatusCodes.BAD_REQUEST);
+    expect(res.body.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field: 'confirmPassword',
+          message: expect.any(String),
+        }),
+      ]),
+    );
+  });
+
+  it('should not register user when email is invalid', async () => {
+    const name = faker.person.fullName();
+    const email = faker.person.fullName();
+    const password = faker.internet.password();
+    const confirmPassword = password;
+
+    const res = await register(name, email, password, confirmPassword);
+
+    expect(res.status).toBe(StatusCodes.BAD_REQUEST);
+    expect(res.body.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field: 'email',
+          message: expect.any(String),
+        }),
+      ]),
+    );
+  });
+
+  it('should not register user when password is invalid', async () => {
+    const name = faker.person.fullName();
+    const email = faker.internet.email();
+    const password = '123';
+    const confirmPassword = password;
+
+    const res = await register(name, email, password, confirmPassword);
+
+    expect(res.status).toBe(StatusCodes.BAD_REQUEST);
+    expect(res.body.errors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field: 'password',
+          message: expect.any(String),
+        }),
+      ]),
+    );
+  });
+});
