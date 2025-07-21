@@ -6,7 +6,10 @@ import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { EmailAlreadyExistsError } from '../errors/EmailAlreadyExistsError';
 
 export async function login(email: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, email: true, password: true, name: true },
+  });
   if (!user) throw new UnauthorizedError('invalid credentials');
 
   const valid = await bcrypt.compare(password, user.password);
