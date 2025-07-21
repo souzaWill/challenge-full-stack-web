@@ -11,5 +11,5 @@ export const exceptionHandler = (
   const statusCode = (error as IBaseError).statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
   const message = (error as IBaseError).message || ReasonPhrases.INTERNAL_SERVER_ERROR;
 
-  return res.status(statusCode).send({ statusCode, message });
+  return res.status(statusCode).send({ message });
 };

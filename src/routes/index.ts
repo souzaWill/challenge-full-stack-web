@@ -7,6 +7,6 @@ router.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-router.use('/login', authRoutes);
+router.use('/', authRoutes);
 
 export default router;
