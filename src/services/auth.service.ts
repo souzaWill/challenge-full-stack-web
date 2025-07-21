@@ -1,9 +1,10 @@
-import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma';
-import { JWT_SECRET, SALT_ROUNDS } from '../config/env';
+import { JWT_SECRET } from '../config/env';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { EmailAlreadyExistsError } from '../errors/EmailAlreadyExistsError';
+import { hashPassword } from '../utils/hashPassword';
+import bcrypt from 'bcrypt';
 
 export async function login(email: string, password: string) {
   const user = await prisma.user.findUnique({
@@ -24,7 +25,7 @@ export async function register(name: string, email: string, password: string) {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new EmailAlreadyExistsError();
 
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+  const hashedPassword = await hashPassword(password);
 
   const user = await prisma.user.create({
     data: {

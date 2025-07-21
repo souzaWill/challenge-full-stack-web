@@ -5,5 +5,5 @@ dotenv.config();
 export const JWT_SECRET = process.env.JWT_SECRET || 'defaultsecret';
 export const PORT = parseInt(process.env.PORT || '4000', 10);
 export const NODE_ENV = process.env.NODE_ENV || 'local';
-export const SALT_ROUNDS = process.env.SALT_ROUNDS || 10;
+export const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS || '10', 10);
 export const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost';
