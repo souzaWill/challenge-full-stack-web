@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit'
+import rateLimit from 'express-rate-limit';
 
 export const rateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000, // 1 minuto
@@ -6,4 +6,4 @@ export const rateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   message: 'Limite de requisições excedido. Tente novamente em breve.',
-})
+});
