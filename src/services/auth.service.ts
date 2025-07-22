@@ -5,23 +5,25 @@ import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { EmailAlreadyExistsError } from '../errors/EmailAlreadyExistsError';
 import { hashPassword } from '../utils/hashPassword';
 import bcrypt from 'bcrypt';
+import { LoginInput, RegisterInput } from '../schemas/authSchema';
 
-export async function login(email: string, password: string) {
+export async function login({ email, password }: LoginInput) {
   const user = await prisma.user.findUnique({
     where: { email },
     select: { id: true, email: true, password: true, name: true },
   });
-  if (!user) throw new UnauthorizedError('invalid credentials');
 
-  const valid = await bcrypt.compare(password, user.password);
-  if (!valid) throw new UnauthorizedError('invalid credentials');
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    throw new UnauthorizedError('invalid credentials');
+  }
 
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
-
+  const token = generateToken(user.id);
+  
   return { token, user: { id: user.id, email: user.email, name: user.name } };
 }
 
-export async function register(name: string, email: string, password: string) {
+export async function register({ name, email, password }: RegisterInput) {
+
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) throw new EmailAlreadyExistsError();
 
@@ -36,4 +38,8 @@ export async function register(name: string, email: string, password: string) {
   });
 
   return { id: user.id, email: user.email, name: user.name };
+}
+
+function generateToken(userId: string): string {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '1h' });
 }
