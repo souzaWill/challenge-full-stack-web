@@ -1,5 +1,4 @@
 import { prisma } from '../lib/prisma';
-import bcrypt from 'bcrypt';
 import { faker } from '@faker-js/faker';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env';
@@ -11,11 +10,13 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await prisma.student.deleteMany();
-  await prisma.user.deleteMany();
+  // await prisma.student.deleteMany();
+  // await prisma.user.deleteMany();
 });
 
 afterAll(async () => {
+  await prisma.student.deleteMany();
+  await prisma.user.deleteMany();
   await prisma.$disconnect();
 });
 
