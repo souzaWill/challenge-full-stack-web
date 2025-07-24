@@ -1,4 +1,4 @@
-import { Student } from '../../generated/prisma';
+import { Student, Prisma } from '../../generated/prisma';
 import { UnprocessableEntity } from '../errors/UnprocessableEntity';
 import { prisma } from '../lib/prisma';
 import { CreateStudentInput, updateStudentSchema } from '../schemas/studentSchema';
@@ -17,6 +17,7 @@ export async function getAll(
   limit = 10,
   sortField: string,
   sortDirection: 'asc' | 'desc',
+  search: string | null,
 ): Promise<PaginatedResult<any>> {
   const skip = (page - 1) * limit;
   let orderBy: any;
@@ -29,11 +30,23 @@ export async function getAll(
     orderBy = { [sortField]: sortDirection };
   }
 
+  const where: Prisma.StudentWhereInput = search
+    ? {
+        user: {
+          name: {
+            contains: search,
+            mode: Prisma.QueryMode.insensitive,
+          },
+        },
+      }
+    : {};
+
   const [data, total] = await Promise.all([
     prisma.student.findMany({
       skip,
       take: limit,
       orderBy,
+      where,
       include: {
         user: true,
       },
