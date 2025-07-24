@@ -6,7 +6,7 @@ import { index, store, show, destroy, update } from '../controllers/student.cont
 
 const router = Router();
 
-router.use(authMiddleware)
+router.use(authMiddleware);
 router.get('/', index);
 router.post('/', validateData(createStudentSchema), store);
 router.put('/:id', validateData(updateStudentSchema), update);

@@ -1,5 +1,4 @@
 import { Student } from '../../generated/prisma';
-import { DocumentAlreadyExistsError } from '../errors/DocumentAlreadyExistsError';
 import { UnprocessableEntity } from '../errors/UnprocessableEntity';
 import { prisma } from '../lib/prisma';
 import { CreateStudentInput, updateStudentSchema } from '../schemas/studentSchema';
@@ -13,18 +12,28 @@ interface PaginatedResult<T> {
   totalPages: number;
 }
 
-export async function getAll(page = 1, limit = 10): Promise<PaginatedResult<any>> {
+export async function getAll(
+  page = 1,
+  limit = 10,
+  sortField: string,
+  sortDirection: 'asc' | 'desc',
+): Promise<PaginatedResult<any>> {
   const skip = (page - 1) * limit;
+  let orderBy: any;
+
+  if (sortField === 'user.name') {
+    orderBy = { user: { name: sortDirection } };
+  } else if (sortField === 'user.email') {
+    orderBy = { user: { email: sortDirection } };
+  } else {
+    orderBy = { [sortField]: sortDirection };
+  }
 
   const [data, total] = await Promise.all([
     prisma.student.findMany({
       skip,
       take: limit,
-      orderBy: {
-        user: {
-          name: 'asc',
-        },
-      },
+      orderBy,
       include: {
         user: true,
       },
@@ -42,14 +51,6 @@ export async function getAll(page = 1, limit = 10): Promise<PaginatedResult<any>
 }
 
 export async function create(data: CreateStudentInput): Promise<Student> {
-  const existing = await prisma.student.findFirst({
-    where: { document: data.document },
-  });
-
-  if (existing) {
-    throw new DocumentAlreadyExistsError();
-  }
-
   return await prisma.student.create({
     data: {
       document: data.document,
@@ -95,9 +96,12 @@ export async function get(id: string): Promise<Student | null> {
   });
 }
 
-export async function deleteByID(id: string){
+export async function deleteByID(id: string) {
   await prisma.$transaction(async (transaction) => {
-    const student = await transaction.student.findUnique({ where: { id }, select: { userId: true } });
+    const student = await transaction.student.findUnique({
+      where: { id },
+      select: { userId: true },
+    });
 
     if (!student) throw new UnprocessableEntity();
 

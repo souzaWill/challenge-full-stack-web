@@ -4,7 +4,13 @@ import { StatusCodes } from 'http-status-codes';
 
 export async function index(req: Request, res: Response, next: NextFunction) {
   try {
-    const result = await getAll();
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.perPage as string) || 10;
+    const sortField = (req.query['sortField[key]'] as string) || 'user.name';
+    const sortDirection = (req.query['sortField[order]'] as string) === 'desc' ? 'desc' : 'asc';
+
+    const result = await getAll(page, limit, sortField, sortDirection);
+
     res.json(result);
   } catch (err) {
     next(err);
