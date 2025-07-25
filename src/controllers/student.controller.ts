@@ -9,7 +9,7 @@ export async function index(req: Request, res: Response, next: NextFunction) {
     const sortField = (req.query['sortBy[0][key]'] as string) || 'user.name';
     const sortDirection = (req.query['sortBy[0][order]'] as string) === 'desc' ? 'desc' : 'asc';
 
-    const searchField = (req.query.search as string)
+    const searchField = req.query.search as string;
     const search = !!searchField?.trim() ? searchField : null;
 
     const result = await getAll(page, limit, sortField, sortDirection, search);

@@ -2,16 +2,16 @@ import { prisma } from '../lib/prisma';
 import { faker } from '@faker-js/faker';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config/env';
-import { Student } from '../../generated/prisma';
 import { hashPassword } from '../utils/hashPassword';
+import { Student } from '@prisma/client';
 
 beforeAll(async () => {
   await prisma.$connect();
 });
 
 beforeEach(async () => {
-  // await prisma.student.deleteMany();
-  // await prisma.user.deleteMany();
+  await prisma.student.deleteMany();
+  await prisma.user.deleteMany();
 });
 
 afterAll(async () => {
@@ -65,4 +65,24 @@ export async function generateTestToken() {
     expiresIn: '1h',
   });
   return { token };
+}
+
+export function randomDocument(): string {
+  const gerarDigito = (base: number[]): number => {
+    const soma = base.reduce((total, num, index) => {
+      const peso = base.length + 1 - index;
+      return total + num * peso;
+    }, 0);
+
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  };
+
+  const numeros: number[] = Array.from({ length: 9 }, () => Math.floor(Math.random() * 10));
+
+  const digito1 = gerarDigito(numeros);
+  const digito2 = gerarDigito([...numeros, digito1]);
+
+  const cpf = [...numeros, digito1, digito2].join('');
+  return cpf;
 }

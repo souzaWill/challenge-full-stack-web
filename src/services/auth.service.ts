@@ -3,17 +3,17 @@ import { prisma } from '../lib/prisma';
 import { JWT_SECRET } from '../config/env';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { hashPassword } from '../utils/hashPassword';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';//TODO
 import { LoginInput, RegisterInput } from '../schemas/authSchema';
 
 export async function login({ email, password }: LoginInput) {
   const user = await prisma.user.findUnique({
-    where: { email },
+    where: { email, student: null },
     select: { id: true, email: true, password: true, name: true },
   });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    throw new UnauthorizedError('invalid credentials');
+    throw new UnauthorizedError('E-mail ou senha inválidos.');
   }
 
   const token = generateToken(user.id);

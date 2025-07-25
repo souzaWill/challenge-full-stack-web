@@ -36,7 +36,7 @@ describe('POST /login - Authentication', () => {
 
     expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
     expect(res.body).toHaveProperty('message');
-    expect(res.body.message).toBe('invalid credentials');
+    expect(res.body.message).toBe('E-mail ou senha inválidos.');
   });
 
   it('should not login with wrong password', async () => {
@@ -46,7 +46,7 @@ describe('POST /login - Authentication', () => {
 
     expect(res.status).toBe(StatusCodes.UNAUTHORIZED);
     expect(res.body).toHaveProperty('message');
-    expect(res.body.message).toBe('invalid credentials');
+    expect(res.body.message).toBe('E-mail ou senha inválidos.');
   });
 
   it('should return an error if email is missing', async () => {
@@ -147,12 +147,11 @@ describe('POST /register - Authentication', () => {
     const confirmPassword = password;
 
     await createTestUser({ email });
-
     const res = await register(name, email, password, confirmPassword);
 
     expect(res.status).toBe(StatusCodes.BAD_REQUEST);
     expect(res.body).toHaveProperty('message');
-    expect(res.body.message).toBe('E-mail já cadastrado');
+    expect(res.body.message).toBe('O campo email já está em uso.');
   });
 
   it('should not register user when passwords do not match', async () => {

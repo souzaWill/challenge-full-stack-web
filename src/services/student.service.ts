@@ -1,4 +1,4 @@
-import { Student, Prisma } from '../../generated/prisma';
+import { Student, Prisma } from '@prisma/client';
 import { UnprocessableEntity } from '../errors/UnprocessableEntity';
 import { prisma } from '../lib/prisma';
 import { CreateStudentInput, updateStudentSchema } from '../schemas/studentSchema';

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { IBaseError } from '../errors/IBaseError';
 import { StatusCodes, ReasonPhrases } from 'http-status-codes';
-import { PrismaClientKnownRequestError } from '../../generated/prisma/runtime/library';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 export const exceptionHandler = (
   error: unknown,
@@ -22,8 +22,6 @@ export const exceptionHandler = (
     statusCode = (error as IBaseError).statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
     message = (error as IBaseError).message ?? ReasonPhrases.INTERNAL_SERVER_ERROR;
   }
-
-  console.error('[ErrorHandler]', error);
 
   return res.status(statusCode).json({ message });
 };

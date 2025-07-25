@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from '../errors/UnauthorizedError';
 
 interface JwtPayload {
   id: string;
@@ -10,7 +11,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Unauthorized: no token provided' });
+    throw new UnauthorizedError('Não autorizado: token não fornecido')
   }
 
   const token = authHeader.split(' ')[1];
@@ -20,6 +21,6 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: 'Unauthorized: invalid token' });
+    throw new UnauthorizedError('Não autorizado: token não fornecido')
   }
 }

@@ -11,11 +11,11 @@ app
   .use(express.json())
   .use(
     cors({
-      origin: CORS_ORIGIN,
+      origin: '*', //TODO
       credentials: true,
     }),
   )
-  // .use(rateLimiter)
+  .use(rateLimiter)
   .use(router)
   .use(exceptionHandler);
 

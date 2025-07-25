@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../../app';
-import { generateTestToken, createTestStudent } from '../setup';
+import { generateTestToken, createTestStudent, randomDocument } from '../setup';
 import { StatusCodes } from 'http-status-codes';
 import { faker } from '@faker-js/faker/locale/pt_BR';
 
@@ -9,7 +9,7 @@ describe('POST /student - student', () => {
     const { token } = await generateTestToken();
 
     const payload = {
-      document: faker.string.numeric(11),
+      document: randomDocument(),
       user: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
@@ -40,7 +40,7 @@ describe('POST /student - student', () => {
   it('should not create a new student with same document', async () => {
     const { token } = await generateTestToken();
 
-    const document = faker.string.numeric(11);
+    const document = randomDocument();
 
     await createTestStudent({
       document: document,
@@ -63,7 +63,7 @@ describe('POST /student - student', () => {
 
     expect(res.status).toBe(StatusCodes.BAD_REQUEST);
     expect(res.body).toHaveProperty('message');
-    expect(res.body.message).toBe('Documento já está cadastrado');
+    expect(res.body.message).toBe('O campo document já está em uso.');
   });
   it('should not create a new student with same registration number', async () => {});
 });
@@ -73,7 +73,7 @@ describe('PUT /student - student', () => {
     const { token } = await generateTestToken();
 
     const student = await createTestStudent({
-      document: faker.string.numeric(11),
+      document: randomDocument(),
       user: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
@@ -98,7 +98,7 @@ describe('GET /student - student', () => {
   it('should list students paginated', async () => {
     const { token } = await generateTestToken();
     await createTestStudent({
-      document: faker.string.numeric(11),
+      document: randomDocument(),
       user: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
@@ -135,7 +135,7 @@ describe('GET /student - student', () => {
   it('should view student', async () => {
     const { token } = await generateTestToken();
     const student = await createTestStudent({
-      document: faker.string.numeric(11),
+      document: randomDocument(),
       user: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
@@ -168,7 +168,7 @@ describe('DELETE /student - student', () => {
   it('should delete student', async () => {
     const { token } = await generateTestToken();
     const student = await createTestStudent({
-      document: faker.string.numeric(11),
+      document: randomDocument(),
       user: {
         name: faker.person.fullName(),
         email: faker.internet.email(),
