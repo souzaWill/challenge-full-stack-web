@@ -17,7 +17,7 @@ app
       credentials: true,
     }),
   )
-    .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+  .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
   .use(rateLimiter)
   .use(router)
   .use(exceptionHandler);

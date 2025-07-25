@@ -11,7 +11,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Não autorizado: token não fornecido')
+    throw new UnauthorizedError('Não autorizado: token não fornecido');
   }
 
   const token = authHeader.split(' ')[1];
@@ -21,6 +21,6 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
     req.user = decoded;
     next();
   } catch (err) {
-    throw new UnauthorizedError('Não autorizado: token não fornecido')
+    throw new UnauthorizedError('Não autorizado: token não fornecido');
   }
 }

@@ -96,7 +96,8 @@ router.post('/', validateData(createStudentSchema), store);
  *         description: Estudante não encontrado
  *       401:
  *         description: Não autorizado
- */router.put('/:id', validateData(updateStudentSchema), update);
+ */ 
+router.put('/:id', validateData(updateStudentSchema), update);
 
 /**
  * @openapi
