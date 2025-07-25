@@ -1,4 +1,5 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import { APP_URL } from './config/env';
 
 const options = {
   definition: {
@@ -10,7 +11,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:4000',//TODO env
+        url: `${APP_URL}`,
       },
     ],
   },

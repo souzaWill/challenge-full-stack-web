@@ -13,11 +13,11 @@ app
   .use(express.json())
   .use(
     cors({
-      origin: '*', //TODO
+      origin: CORS_ORIGIN,
       credentials: true,
     }),
   )
-    .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+    .use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
   .use(rateLimiter)
   .use(router)
   .use(exceptionHandler);
