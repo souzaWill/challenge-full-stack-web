@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma';
 import { JWT_SECRET } from '../config/env';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { hashPassword } from '../utils/hashPassword';
-import bcrypt from 'bcryptjs';//TODO
+import bcrypt from 'bcrypt';
 import { LoginInput, RegisterInput } from '../schemas/authSchema';
 
 export async function login({ email, password }: LoginInput) {
