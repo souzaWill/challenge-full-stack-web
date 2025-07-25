@@ -158,7 +158,6 @@ router.get('/:id', show);
 router.delete('/:id', destroy);
 
 export default router;
-//TODO
 /**
  * @openapi
  * components:
