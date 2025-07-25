@@ -4,6 +4,8 @@ import { exceptionHandler } from './middlewares/exceptionHandler';
 import cors from 'cors';
 import { CORS_ORIGIN } from './config/env';
 import { rateLimiter } from './middlewares/rateLimiter';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './swagger';
 
 const app = express();
 
@@ -15,6 +17,7 @@ app
       credentials: true,
     }),
   )
+    .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
   .use(rateLimiter)
   .use(router)
   .use(exceptionHandler);
