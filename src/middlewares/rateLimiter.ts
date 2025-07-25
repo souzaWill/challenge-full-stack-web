@@ -1,9 +1,13 @@
-import rateLimit from 'express-rate-limit'
+import rateLimit from 'express-rate-limit';
+import { Request, Response, NextFunction } from 'express';
 
-export const rateLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minuto
-  max: 10, // até 10 requisições por IP por minuto
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: 'Limite de requisições excedido. Tente novamente em breve.',
-})
+const disabled = process.env.NODE_ENV === 'test';
+export const rateLimiter = disabled
+  ? (req: Request, res: Response, next: NextFunction) => next()
+  : rateLimit({
+      windowMs: 1 * 60 * 1000,
+      max: 60,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: 'Limite de requisições excedido. Tente novamente em breve.',
+    });

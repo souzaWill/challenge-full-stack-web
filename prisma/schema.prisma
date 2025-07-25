@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
@@ -15,19 +15,24 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  student   Student?
+  id         String    @id @default(uuid()) @db.Uuid @map("id")
+  name       String    @map("name")
+  email      String    @unique @map("email")
+  password   String    @map("password")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+  student    Student?  @relation("UserStudent")
+
+  @@map("users")
 }
 
 model Student {
-  id                 String @id @default(uuid()) @db.Uuid
-  userId             String @unique @db.Uuid
-  document           String @unique
-  registrationNumber Int    @unique @default(autoincrement())
-  user               User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 String  @id @default(uuid()) @db.Uuid @map("id")
+  userId             String  @unique @db.Uuid @map("user_id")
+  document     String  @unique @map("document")
+  registrationNumber Int     @unique @default(autoincrement()) @map("registration_number")
+  user               User    @relation("UserStudent", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("students")
 }
+

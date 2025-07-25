@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { z, ZodError } from 'zod';
-import { StatusCodes, ReasonPhrases } from 'http-status-codes';
+import { StatusCodes } from 'http-status-codes';
 
 export function validateData(schema: z.ZodObject<any, any>) {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -11,12 +11,12 @@ export function validateData(schema: z.ZodObject<any, any>) {
       if (error instanceof ZodError) {
         return res.status(StatusCodes.BAD_REQUEST).json({
           errors: error.issues.map((e) => ({ field: e.path.join('.'), message: e.message })),
-          message: ReasonPhrases.BAD_REQUEST,
+          message: 'Requisição invalida',
         });
       }
 
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: 'Internal Server Error',
+        message: 'Ocorreu um erro interno no servidor. Tente novamente mais tarde.',
       });
     }
   };

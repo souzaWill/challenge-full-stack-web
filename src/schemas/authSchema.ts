@@ -5,6 +5,8 @@ export const loginSchema = z.object({
   password: z.string().min(8),
 });
 
+export type LoginInput = z.infer<typeof loginSchema>;
+
 export const registerSchema = z
   .object({
     name: z.string().min(2, 'O nome deve ter ao menos 2 caracteres'),
@@ -16,3 +18,5 @@ export const registerSchema = z
     path: ['confirmPassword'],
     message: 'As senhas não coincidem',
   });
+
+export type RegisterInput = z.infer<typeof registerSchema>;

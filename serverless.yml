@@ -1,0 +1,38 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: wsolutions
+service: challenge-full-stack-web
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+    JWT_SECRET: ${env:JWT_SECRET}
+    PORT: ${env:PORT}
+    POSTGRES_USER: ${env:POSTGRES_USER}
+    POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD}
+    POSTGRES_DB: ${env:POSTGRES_DB}
+    POSTGRES_PORT: ${env:POSTGRES_PORT}
+    DATABASE_URL: ${env:DATABASE_URL}
+    CORS_ORIGIN: ${env:CORS_ORIGIN}
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - httpApi: '*'
+
+build:
+  esbuild: true
+
+plugins:
+  - serverless-offline
+  - '@jimdo/serverless-dotenv'
+
+package:
+  patterns:
+    - '!node_modules/.prisma/client/libquery_engine-*'
+    - 'node_modules/.prisma/client/libquery_engine-rhel-*'
+    - '!node_modules/prisma/libquery_engine-*'
+    - '!node_modules/@prisma/engines/**'

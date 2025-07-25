@@ -20,13 +20,18 @@ services:
   api:
     build: .
     volumes:
-      - ./:/app
+      - .:/app
       - /app/node_modules
     ports:
       - '${PORT}:${PORT}'
     networks:
       - app-network
-    env_file: '.env'
+    env_file: .env
+    tty: true
+    stdin_open: true
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
